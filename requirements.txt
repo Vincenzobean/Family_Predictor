@@ -1,0 +1,12 @@
+jupyterlab
+notebook
+nbconvert
+pandas
+numpy
+requests
+beautifulsoup4
+lxml
+regex
+selenium
+webdriver-manager
+tqdm
