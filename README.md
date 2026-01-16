@@ -10,7 +10,7 @@
 - Update the `Dockerfile` `CMD` to run the script instead of Jupyter for automated pipelines.
 
 ## Selenium / Browser notes
-The provided `Dockerfile` includes Chromium and `chromium-driver` so Selenium-based scraping should work. If you use a different browser or need a specific driver version, update the Dockerfile accordingly.
+The program uses Chromium and `chromium-driver` so Selenium-based scraping should work. If you use a different browser or need a specific driver version, update accordingly.
 
 # Family Owned & Operated Predictor
 
@@ -19,8 +19,6 @@ This repository contains a rule-based predictor implemented in the notebook `Fam
 What’s included
 - `Family Owned&Operated Predictor.ipynb` — main notebook (scraping, feature extraction, scoring).
 - `requirements.txt` — Python dependencies used by the notebook.
-- `Dockerfile`, `start.sh`, `docker-compose.yml` — container setup for reproducible runs (Chromium + chromedriver included for Selenium).
-- `tools/run_leak_test.py` — small helper script that executes the notebook cells and runs a quick score on sample records.
 
 Quick start (local, notebook)
 1. Create a Python environment and install dependencies:
@@ -62,22 +60,6 @@ Notes on usage
 - The notebook is intentionally defensive: it prefers About-page signals for ownership, and applies an operation gate that uses leadership surname clustering to reduce false positives. Recent updates include improved detection for header-based name/title patterns (e.g., `<h3>NAME</h3>` followed by `<h4>TITLE</h4>`) and acceptance of ALL-CAPS names.
 - The notebook writes an Excel file `family_owned_results.xlsx` when the final save cell runs. If you prefer CSV, open the last cell and replace `df.to_excel(...)` with `df.to_csv(...)`.
 - For robust bulk runs, convert the notebook to a script and add a CLI wrapper. See the `Next steps` section below.
-
-Testing the extractor locally
-- Quick test using the provided helper script (executes notebook cells and scores sample inputs):
-
-```powershell
-python tools/run_leak_test.py
-```
-
-Recommended next steps
-- Add a small CLI wrapper `run_predictor.py` that accepts a list of URLs and writes results to CSV/Excel.
-- Add unit tests for `looks_like_name()`, `extract_leaders_from_text_blocks()`, and `leadership_cluster()` using representative HTML snippets (helps prevent regressions when improving heuristics).
-- If you want me to, I can add the CLI wrapper and a GitHub Actions workflow to run the notebook/script on push.
-
-Security & operational cautions
-- Jupyter in the Docker image may be started without a token for convenience — do not expose it to public networks. Configure `NotebookApp.token` or use authentication/reverse-proxy for shared deployments.
-- The scraper uses Selenium and visits remote sites; ensure you comply with each site's robots policies and terms of use.
 
 Contact / ownership
 - This project is maintained in this repository; open an issue or request if you'd like help tuning thresholds, adding tests, or exporting different output formats.
